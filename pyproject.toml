@@ -9,6 +9,7 @@ packages = [{include = "aiohttp_ci_cd_test"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 aiohttp = "^3.9.3"
+pytest = "^8.0.0"
 
 
 [build-system]
