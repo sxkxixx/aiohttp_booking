@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "aiohttp-ci-cd-test"
+version = "0.1.0"
+description = ""
+authors = ["sxkxixx <sasha.kornilov.1212@gmail.com>"]
+readme = "README.md"
+packages = [{include = "aiohttp_ci_cd_test"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+aiohttp = "^3.9.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
