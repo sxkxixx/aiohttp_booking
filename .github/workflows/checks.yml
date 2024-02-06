@@ -42,4 +42,4 @@ jobs:
 
       - name: Check Github Secret
         run: | 
-          echo ${{ secret.SECRET_KEY }}
+          echo ${{ secrets.SECRET_KEY }}
