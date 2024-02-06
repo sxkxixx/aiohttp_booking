@@ -35,3 +35,7 @@ jobs:
       - name: Install Dependencies
         run: |
           poetry install & echo "Dependencies installed"
+
+      - name: Run Pytest
+        run: |
+          poetry
