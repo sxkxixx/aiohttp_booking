@@ -10,6 +10,18 @@ packages = [{include = "aiohttp_ci_cd_test"}]
 python = "^3.10"
 aiohttp = "^3.9.3"
 pytest = "^8.0.0"
+peewee-async = "^0.10.0"
+python-dotenv = "^1.0.1"
+mypy = "^1.8.0"
+aiopg = "^1.4.0"
+passlib = "^1.7.4"
+pydantic = "^2.6.1"
+email-validator = "^2.1.0.post1"
+psycopg2 = "^2.9.9"
+pytest-asyncio = "^0.23.4"
+python-jose = "^3.3.0"
+pytest-aiohttp = "^1.0.5"
+aioredis = "^2.0.1"
 
 
 [build-system]
