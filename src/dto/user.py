@@ -4,27 +4,36 @@ from pydantic import BaseModel, EmailStr, field_validator, Field
 
 __all__ = [
     'UserResponseDTO',
-    'UserAuthRequest',
+    'UserLoginRequest',
     'Token',
-    'TokenResponse'
+    'TokenResponse',
+    'UserRegisterRequest'
 ]
 
 
-class UserAuthRequest(BaseModel):
-    email: EmailStr
-    hashed_password: str = Field(..., alias='password')
+class RefreshSessionRequest(BaseModel):
+    fingerprint: str
 
-    @field_validator('email')
+
+class UserRegisterRequest(BaseModel):
+    email: EmailStr
+    password: str = Field(...)
+
+    @field_validator('email', mode='before')
     @classmethod
     def email_lower(cls, field: EmailStr) -> str:
         return field.lower()
 
-    @field_validator("hashed_password")
+    @field_validator("password")
     @classmethod
     def validate_password(cls, field: str) -> str:
         if len(field) < 6:
             raise ValueError('Password must be at least 6')
         return field
+
+
+class UserLoginRequest(RefreshSessionRequest, UserRegisterRequest):
+    pass
 
 
 class UserResponseDTO(BaseModel):
@@ -34,7 +43,6 @@ class UserResponseDTO(BaseModel):
 
 class TokenResponse(BaseModel):
     access_token: str
-    token_type: str
     header: str
 
 

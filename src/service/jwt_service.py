@@ -1,5 +1,4 @@
 from datetime import timedelta, datetime
-from typing import Optional
 
 from jose import jwt
 from jose.constants import Algorithms
@@ -32,13 +31,10 @@ class JWTService:
         token.update({'exp': exp})
         return jwt.encode(token, self.__secret_key, algorithm=Algorithms.HS256)
 
-    def get_token_payload(self, jwt_token: str) -> Optional[dict]:
+    def get_token_payload(self, jwt_token: str) -> dict:
         """
         Возвращает payload токена или None если вылетело исключение
         :param jwt_token: Токен
         :return: Dict | None
         """
-        try:
-            return jwt.decode(jwt_token, self.__secret_key, algorithms=[Algorithms.HS256])
-        except jwt.JWTError:
-            return None
+        return jwt.decode(jwt_token, self.__secret_key, algorithms=[Algorithms.HS256])

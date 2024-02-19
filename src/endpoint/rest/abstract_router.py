@@ -7,5 +7,5 @@ __all__ = ['AbstractRouter']
 
 class AbstractRouter(ABC):
     @abstractmethod
-    def setup_endpoints(self, app: Application):
+    def setup_router(self) -> Application:
         raise NotImplementedError()

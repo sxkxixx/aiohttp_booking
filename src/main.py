@@ -1,11 +1,11 @@
 import logging
 from datetime import timedelta
 
-from aiohttp.typedefs import Handler
-from aiohttp.web import Application, run_app, Request, Response, middleware
+from aiohttp.web import Application, run_app, Request, Response
 
-from config import ApplicationConfig
-from endpoint.rest import AbstractRouter, AuthRouter
+import middleware
+from endpoint.rest import AuthRouter
+from infrastructure.config import ApplicationConfig
 from infrastructure.database.database import manager, database
 from infrastructure.database.model import User
 from service import HashService, JWTService
@@ -19,11 +19,6 @@ logging.basicConfig(
         "(%(filename)s).%(funcName)s(%(lineno)d) - %(message)s"
     )
 )
-
-
-def setup_routers(_app: Application, *routers: AbstractRouter) -> None:
-    for router in routers:
-        router.setup_endpoints(_app)
 
 
 async def ping(request: Request) -> Response:
@@ -51,25 +46,24 @@ def initialize_database_tables() -> None:
         database.create_tables(MODELS)
 
 
-@middleware
-async def logging_middleware(request: Request, handler: Handler):
-    info = f'METHOD = {request.method}, {request.host}{request.path}'
-    logger.info(f'Received request: {info}')
-    response = await handler(request)
-    logger.info(f'Response status code: {response.status}')
-    return response
-
-
 def init_app() -> Application:
-    app = Application()
+    app = Application(
+        middlewares=[
+            middleware.logging_middleware
+        ]
+    )
     hash_service = HashService()
     jwt_service = JWTService(
         access_token_timedelta=timedelta(minutes=ApplicationConfig.ACCESS_TOKEN_EXPIRE_MINUTES),
         secret_key=ApplicationConfig.SECRET_KEY,
     )
     user_repository = UserRepository(manager)
-    auth_router = AuthRouter('/api/v1/auth', user_repository, hash_service, jwt_service)
-    setup_routers(app, auth_router)
+    auth_router = AuthRouter(
+        user_repository,
+        hash_service,
+        jwt_service,
+    )
+    app.add_subapp('/api/v1/auth', auth_router.setup_router())
     return app
 
 

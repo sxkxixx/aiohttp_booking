@@ -1,9 +1,9 @@
 import json
 from concurrent.futures import Executor
-from typing import Any, Optional
+from typing import Optional
 
 from aiohttp.typedefs import LooseHeaders
-from aiohttp.web import Response, json_response
+from aiohttp.web import Response
 from pydantic import BaseModel
 
 

@@ -4,7 +4,6 @@ from aiohttp import ClientResponse
 from aiohttp.test_utils import TestClient
 from aiohttp.web import Response, Request, Application
 
-from dto.user import UserAuthRequest
 from main import init_app
 
 

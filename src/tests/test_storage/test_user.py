@@ -3,18 +3,18 @@ from typing import Optional
 import peewee
 import pytest
 
-from dto.user import UserAuthRequest
+from dto.user import UserRegisterRequest
 from infrastructure.database.model import User
 from storage.user import AbstractUserRepository
 
-USER = UserAuthRequest(email='user@gmail.com', password='password')
+USER = UserRegisterRequest(email='user@gmail.com', password='password')
 
 
 @pytest.mark.asyncio
 async def test_user_creating(user_repository: AbstractUserRepository):
     """Создает пользователя и проверяет наличие записи в БД"""
     await user_repository.create_user(USER)
-    user: Optional[User] = await user_repository.get_user(email='user@gmail.com')
+    user: Optional[User] = await user_repository.get_user(User.email == 'user@gmail.com')
     assert user is not None
     assert user.email == 'user@gmail.com'
 
@@ -26,7 +26,7 @@ async def test_user_deleting(user_repository: AbstractUserRepository):
     :param user_repository:
     :return:
     """
-    user: Optional[User] = await user_repository.get_user(email='user@gmail.com')
+    user: Optional[User] = await user_repository.get_user(User.email == 'user@gmail.com')
     assert not user
 
 

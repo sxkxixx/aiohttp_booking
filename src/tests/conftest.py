@@ -5,6 +5,7 @@ import aiopg
 import pytest_asyncio
 from peewee_async import PooledPostgresqlDatabase, Manager
 
+from infrastructure.config.database_config import DatabaseConfig
 from main import MODELS
 
 logging.basicConfig(
@@ -24,11 +25,11 @@ async def event_loop():
 @pytest_asyncio.fixture(scope='session', autouse=True)
 async def manager():
     database = PooledPostgresqlDatabase(
-        database='test',
-        user='sxkxixx',
-        password='250747',
-        host='localhost',
-        port='5432',
+        database=DatabaseConfig.DATABASE_NAME,
+        user=DatabaseConfig.DATABASE_USER,
+        password=DatabaseConfig.DATABASE_PASSWORD,
+        host=DatabaseConfig.DATABASE_HOST,
+        port=DatabaseConfig.DATABASE_PORT,
         connection_timeout=aiopg.DEFAULT_TIMEOUT,
     )
     database._allow_sync = False
