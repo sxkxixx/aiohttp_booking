@@ -17,16 +17,16 @@ jobs:
       postgres:
         image: postgres:15-alpine
         ports:
-          - ${{ env.POSTGRES_PORT }}:${{ env.POSTGRES_PORT }}
+          - ${{ secrets.POSTGRES_PORT }}:${{ secrets.POSTGRES_PORT }}
         env:
-          POSTGRES_DB: ${{ env.POSTGRES_DB }}
-          POSTGRES_USER: ${{ env.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
 
       redis:
         image: redis:7.2.3-alpine
         ports:
-          - ${{ env.REDIS_PORT }}:${{ env.REDIS_PORT }}
+          - ${{ secrets.REDIS_PORT }}:${{ secrets.REDIS_PORT }}
 
     steps:
       - name: Checkout the code
@@ -46,13 +46,13 @@ jobs:
 
       - name: Install Dependencies
         env:
-          POSTGRES_DB: ${{ env.POSTGRES_DB }}
-          POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
-          POSTGRES_PORT: ${{ env.POSTGRES_PORT }}
-          POSTGRES_USER: ${{ env.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
-          REDIS_HOST: ${{ env.REDIS_HOST }}
-          REDIS_PORT: ${{ env.REDIS_PORT }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          REDIS_PORT: ${{ secrets.REDIS_PORT }}
         run: |
           cd src/
           poetry run pytest
