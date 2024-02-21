@@ -4,7 +4,6 @@ version = "0.1.0"
 description = ""
 authors = ["sxkxixx <sasha.kornilov.1212@gmail.com>"]
 readme = "README.md"
-packages = [{include = "aiohttp_ci_cd_test"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
