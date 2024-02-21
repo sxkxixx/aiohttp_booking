@@ -6,15 +6,6 @@ on:
 
 jobs:
   testing:
-    env:
-      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-      POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
-      POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
-      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      REDIS_HOST: ${{ secrets.REDIS_HOST }}
-      REDIS_PORT: ${{ secrets.REDIS_PORT }}
-
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -26,16 +17,16 @@ jobs:
       postgres:
         image: postgres:15-alpine
         env:
-          POSTGRES_DB: "$POSTGRES_DB"
-          POSTGRES_USER: "$POSTGRES_USER"
-          POSTGRES_PASSWORD: "$POSTGRES_PASSWORD"
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
         ports:
-          - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+          - 5432:5432
 
       redis:
         image: redis:7.2.3-alpine
         ports:
-          - "$REDIS_PORT:$REDIS_PORT"
+          - 6379:6379
 
     steps:
       - name: Checkout the code
@@ -59,13 +50,13 @@ jobs:
 
       - name: Run Pytest
         env:
-          POSTGRES_DB: "$POSTGRES_DB"
-          POSTGRES_HOST: "$POSTGRES_HOST"
-          POSTGRES_PORT: "$POSTGRES_PORT"
-          POSTGRES_USER: "$POSTGRES_USER"
-          POSTGRES_PASSWORD: "$POSTGRES_PASSWORD"
-          REDIS_HOST: "$REDIS_HOST"
-          REDIS_PORT: "$REDIS_PORT"
+          POSTGRES_DB: postgres
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
         run: |
           cd src/
           poetry run pytest
