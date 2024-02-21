@@ -1,6 +1,6 @@
 from aioredis import Redis
 
-from config import RedisConfig
+from infrastructure.config import RedisConfig
 
 redis = Redis(
     host=RedisConfig.HOST,
