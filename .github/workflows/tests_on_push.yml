@@ -25,12 +25,12 @@ jobs:
     services:
       postgres:
         image: postgres:15-alpine
-        ports:
-          - "$POSTGRES_PORT:$POSTGRES_PORT"
         env:
           POSTGRES_DB: "$POSTGRES_DB"
           POSTGRES_USER: "$POSTGRES_USER"
           POSTGRES_PASSWORD: "$POSTGRES_PASSWORD"
+        ports:
+          - "$POSTGRES_PORT:$POSTGRES_PORT"
 
       redis:
         image: redis:7.2.3-alpine
