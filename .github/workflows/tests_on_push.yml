@@ -46,6 +46,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          cd src
           poetry install
 
       - name: Run Pytest
@@ -58,5 +59,4 @@ jobs:
           REDIS_HOST: localhost
           REDIS_PORT: 6379
         run: |
-          cd src/
           poetry run pytest
