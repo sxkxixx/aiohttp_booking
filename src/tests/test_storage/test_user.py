@@ -3,7 +3,7 @@ from typing import Optional
 import peewee
 import pytest
 
-from dto.user import UserRegisterRequest
+from common.dto import UserRegisterRequest
 from infrastructure.database.model import User
 from storage.user import AbstractUserRepository
 

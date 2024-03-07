@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from dto.user import UserRegisterRequest
+from common.dto import UserRegisterRequest
 from infrastructure.database.model import User
 
 

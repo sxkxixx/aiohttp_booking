@@ -7,7 +7,8 @@ __all__ = [
     'UserLoginRequest',
     'Token',
     'TokenResponse',
-    'UserRegisterRequest'
+    'UserRegisterRequest',
+    'RefreshSessionRequest'
 ]
 
 
