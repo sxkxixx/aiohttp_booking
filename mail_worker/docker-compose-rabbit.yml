@@ -1,0 +1,12 @@
+version: "2.1"
+
+# Простой запуск RabbitMQ с админкой и guest пользователем
+# docker compose -f docker-compose-rabbit.yml up
+
+services:
+  rabbit:
+    container_name: rabbit
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"

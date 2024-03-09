@@ -2,7 +2,7 @@ from typing import Optional
 
 from peewee_async import Manager
 
-from dto.user import UserRegisterRequest
+from common.dto import UserRegisterRequest
 from infrastructure.database.model import User
 from storage.user.abstract_user_repository import AbstractUserRepository
 

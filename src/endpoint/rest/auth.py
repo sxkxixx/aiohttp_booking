@@ -7,27 +7,35 @@ import peewee
 from aiohttp.web import Application, Request, Response
 
 from application.user_session.user_session import UserSession
-from dto.user import UserLoginRequest, UserResponseDTO, TokenResponse, UserRegisterRequest
+from common.dto import UserLoginRequest, UserResponseDTO, TokenResponse, UserRegisterRequest
+from common.messages import VerificationMessage, VerificationMessageData
+from common.publisher.publisher import BrokerPublisher
+from common.service import JWTService
+from common.service.hash_service import HashService
 from endpoint import http_exceptions
 from endpoint.response import PydanticJsonResponse
-from infrastructure.database.model import User
+from infrastructure.database.model import User, VerifyRecord
 from infrastructure.redis import redis
-from service.hash_service import HashService
-from service.jwt_service import JWTService
 from storage.user.abstract_user_repository import AbstractUserRepository
+from storage.verity_record.abstract_verify_record_repository import AbstractVerityRecordRepository
 from .abstract_router import AbstractRouter
 
 
 class AuthRouter(AbstractRouter):
     REFRESH_TOKEN_COOKIE_NAME = "refresh_token"
+    EMAILS_QUEUE_NAME = 'mailings'
 
     def __init__(
             self,
             user_repository: AbstractUserRepository,
+            verify_record_repository: AbstractVerityRecordRepository,
+            publisher: BrokerPublisher,
             hash_service: HashService,
             jwt_service: JWTService,
     ):
         self.user_repository: AbstractUserRepository = user_repository
+        self.verify_record_repository: AbstractVerityRecordRepository = verify_record_repository
+        self.publisher: BrokerPublisher = publisher
         self._hasher: HashService = hash_service
         self._jwt_service: JWTService = jwt_service
 
@@ -44,18 +52,22 @@ class AuthRouter(AbstractRouter):
         :param request:
         :return:
         """
-        schema = UserRegisterRequest.model_validate(
-            await request.json(),
-            from_attributes=True
-        )
+        schema = UserRegisterRequest.model_validate(await request.json(), from_attributes=True)
         schema.password = self._hasher.get_str_hash(schema.password)
         try:
             user: User = await self.user_repository.create_user(schema)
-            return PydanticJsonResponse(
-                body=UserResponseDTO.model_validate(user, from_attributes=True),
-            )
         except peewee.IntegrityError:
             return http_exceptions.UniqueEmailException()
+        verify_record: VerifyRecord = await self.verify_record_repository.create(
+            token=os.urandom(32).hex(), user_id=user.id
+        )
+        message_data = VerificationMessageData(receiver=user.email, verify_token=verify_record.token)
+        message = VerificationMessage(message_data=message_data)
+        async with self.publisher:
+            await self.publisher.publish_message(message, self.EMAILS_QUEUE_NAME)
+        return PydanticJsonResponse(
+            body=UserResponseDTO.model_validate(user, from_attributes=True)
+        )
 
     async def handle_login(self, request: Request) -> Response:
         """

@@ -6,9 +6,9 @@ from aiohttp.web import Request, StreamResponse
 from aiohttp.web_middlewares import middleware
 from jose import ExpiredSignatureError, JWTError
 
+from common.service import JWTService
 from endpoint import http_exceptions
 from infrastructure.database.model import User
-from service import JWTService
 from storage.user import AbstractUserRepository
 
 logger = logging.getLogger('Aiohttp Server')

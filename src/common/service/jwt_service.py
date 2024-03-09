@@ -3,7 +3,7 @@ from datetime import timedelta, datetime
 from jose import jwt
 from jose.constants import Algorithms
 
-from dto.user import Token
+from common.dto import Token
 from infrastructure.database.model import User
 
 
