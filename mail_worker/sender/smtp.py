@@ -6,10 +6,10 @@ from sender.abstract_sender import AbstractSender
 
 class SmtpSSLSender(AbstractSender):
     def __init__(self, host: str, port: int, user: str, password: str):
-        self.__host = host
-        self.__port = port
-        self.__user = user
-        self.__password = password
+        self.__host: str = host
+        self.__port: int = port
+        self.__user: str = user
+        self.__password: str = password
 
     def sendmail(self, message: EmailMessage) -> None:
         with smtplib.SMTP_SSL(host=self.__host, port=self.__port) as connection:
