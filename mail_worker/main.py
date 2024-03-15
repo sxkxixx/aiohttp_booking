@@ -2,6 +2,8 @@ import argparse
 import asyncio
 import logging
 
+from jinja2 import Environment, FileSystemLoader
+
 from consumer.consumer import Consumer
 from handlers import MailHandler
 from handlers.executors import *
@@ -14,6 +16,14 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+
+
+def get_jinja2_environment() -> Environment:
+    env = Environment(
+        loader=FileSystemLoader('templates'),
+        enable_async=True
+    )
+    return env
 
 
 def parse_argv() -> argparse.Namespace:
@@ -33,6 +43,7 @@ def parse_argv() -> argparse.Namespace:
 
 async def main(_loop: asyncio.AbstractEventLoop) -> None:
     args: argparse.Namespace = parse_argv()
+    jinja_template_env = get_jinja2_environment()
     handler = MailHandler()
     sender = SmtpSSLSender(
         host=SMTPConfig.SMTP_SERVER,
@@ -40,7 +51,7 @@ async def main(_loop: asyncio.AbstractEventLoop) -> None:
         user=SMTPConfig.SMTP_EMAIL,
         password=SMTPConfig.SMTP_PASSWORD,
     )
-    handler.register_executor(VerifyEmailExecutor(sender))
+    handler.register_executor(VerifyEmailExecutor(sender, jinja_template_env))
     consumer = Consumer(
         host=args.host,
         port=args.port,
